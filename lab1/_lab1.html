@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>_lab1.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="kurs-uczenie-maszynowe-2">Kurs: Uczenie Maszynowe 2</h2>
+<p><em><strong>Autor: Marcin Wardyński, Grupa: Wtorek, 9:45</strong></em></p>
+<h2 id="laboratorium-1-interpretowalno%C5%9B-modeli-ml---metoda-shapleya">Laboratorium 1: Interpretowalnoś modeli ML - metoda Shapleya</h2>
+<h3 id="u%C5%BCyte-dane">Użyte dane</h3>
+<p>Do przeprowadzenia ćwiczenia wykorzystałem zbiór UCI https://archive.ics.uci.edu/dataset/109/wine, który to jest dostępny bezpośrednio na platformie Orange.</p>
+<p>Zawiera on opis 178 próbek win z trzech różnych gatunków winorośli - gatunek winorośli odpowiada za klasę nadaną danej próbce ze zbioru {1, 2, 3}. Poza klasą, każda próbka wina scharakteryzowana jest trzynastoma cechami o wartościach liczbowych, zmienno- i stałoprzecinkowych</p>
+<h3 id="polecenia-do-zadania">Polecenia do zadania</h3>
+<h4 id="1-zwr%C3%B3%C4%87-uwag%C4%99-by-zbi%C3%B3r-zawiera%C5%82-ciekawe-i-zr%C3%B3%C5%BCnicowane-przyk%C5%82ady-wykorzystaj-do-wybierania-przyk%C5%82ad%C3%B3w-ciekawych-widget-ice-oraz-explain-predictions">1. Zwróć uwagę by zbiór zawierał ciekawe i zróżnicowane przykłady. Wykorzystaj do wybierania przykładów ciekawych widget ICE oraz Explain Predictions</h4>
+<p>Zarówno widget <em>ICE</em>, jak i <em>Expain Predictions</em> przekonują co do zróżnicowania próbek w użytym zbiorze danych. Ponieważ potrzebujemy dwóch ciekawych próbek, wybiorę jedną z nich za pomocą <em>Explain Predictions</em> i drugą używając widgetu <em>ICE</em> dla zastosowanego modelu klasyfikującego lasu losowego.</p>
+<ul>
+<li><em>Explain Predictons</em></li>
+</ul>
+<p>Diagram ten pokazuje dla wybranych próbek z jaką wagą poszczególne cechy przyczyniają się do wybranej klasyfikacji. W załączonym zrzucie ekranu wybraną kategorią, jest klasa winorośli = 1. Można dostrzec kilka ciekawych próbek do przebadania, jak np.: te dwie-trzy próbki należące do klasy 1, ale posiadające niższą sumę punktów od pozostałych, czy też kilka próbek spoza klasy 1, ale posiadających kilka cech, które kwalifikowałyby tą próbkę do klasy 1 całkiem dobrze.</p>
+<p>Dla celów tego laboratorium zdecydowałem się uwzględnić próbkę zaznaczoną na żółty, czyli spoza klasy 1, ale posiadającej kilka cech dobrze kwalifikujących się do klasy 1.</p>
+<p><img src="_img/explain_predictions.png" alt=""></p>
+<ul>
+<li><em>ICE</em></li>
+</ul>
+<p><em>ICE</em> przedstawia wpływ pojedyńczej cechy na efekt klasyfikacji modelu. Ponieważ każdy wykres widgetu przestawia wszystkie próbki w kontekście pojedyńczej cechy, musimy zdecydować się na wybór jednej z nich. Dla ułatwienia doboru posortowałem cechy od najważniejszej dla wybranej klasy (więcej na temat istotności cech w kolejnych punktach sprawozdania).</p>
+<p>Dla zaznaczonej klasy 2, najważniejszą cechą jest &quot;Intensywność koloru&quot; i wśród wszystkich próbek zainteresowała mnie ta należąca do klasy 2, która charakteryzuje się niską zmianą prawdopodobieństwa ΔP(Wine=2) dla tej klasy. Na załączonym zrzucie ekranu próbka ta jest zaznaczona kolorem czarnym.</p>
+<p><img src="_img/ice.png" alt=""></p>
+<h4 id="2-jako-modele-wybierz-drzewa-decyzyjne-i-lasy-losowe-zwr%C3%B3%C4%87-uwag%C4%99-na-to-by-silniejszy-model-dawa%C5%82-lepsz%C4%85-dok%C5%82adno%C5%9B%C4%87-dla-danych-testowych-poka%C5%BC-jak-wp%C5%82ywa-wyb%C3%B3r-las%C3%B3w-losowych-boosting-i-random-subsets-na-zmian%C4%99-rankingu-cech-shapleya">2. Jako modele wybierz drzewa decyzyjne i lasy losowe. Zwróć uwagę na to by silniejszy model dawał lepszą dokładność dla danych testowych. Pokaż jak wpływa wybór lasów losowych (boosting i random subsets) na zmianę rankingu cech Shapleya.</h4>
+<p>Dla przekazanych wszystkich cech, las losowy daje lepsze wyniki:</p>
+<p><img src="_img/results_basic.png" alt=""></p>
+<p>Aby sprawdzić boosting, muszę dodać nowy widget, a mianowicie <em>Gradient Boosting</em>, ponieważ <em>Random Forest</em> bazuje na koncepcie baggingu, a nie boostingu i nie można tego zmienić. Po dodaniu nowego modelu, wyniki prezentują się następująco:</p>
+<p><img src="_img/results_ext.png" alt=""></p>
+<p>Widzimy, że <em>Gradient Boosting</em>, ustępuje niewiele <em>Random Forest</em>, jednak jest wyraźnie lepszy od pojedyńczego drzewa decyzyjnego <em>Tree</em>.</p>
+<p>Poza tym, domyśla implementacja <em>Random Forest</em> w <em>Orange</em> losuje zbiór attrybutów dla każdego drzewa w lesie na nowo, i tego zachowania nie można zmienić za pomocą żadnego parametru.</p>
+<p>Zmiany w rankingu cech Shapleya zostaną przebadane w kolejnym punkcie, więc tu tylko sprawdzę, posortowane zestawy cech wewnątrz widgetu <em>ICE</em> dla modelu <em>Random Forest</em> oraz <em>Gradient Boosting</em>.</p>
+<ul>
+<li>
+<p><em>Random Forest</em><br>
+<img src="_img/feat_1_1.png" width="200"/>
+<img src="_img/feat_1_2.png" width="200"/>
+<img src="_img/feat_1_3.png" width="200"/></p>
+</li>
+<li>
+<p><em>Gradient Boosting</em><br>
+<img src="_img/feat_2_1.png" width="200"/>
+<img src="_img/feat_2_2.png" width="200"/>
+<img src="_img/feat_2_3.png" width="200"/></p>
+</li>
+</ul>
+<p>Jak widzimy powyżej, istnieją drobne rozbieżności w doborze najważniejszych cech w zależności od wybranej klasy winogron pomiędzy tymi modelami, jednakże nie wolno zapominać o losowym charakterze <em>Random Forest</em>, gdzie pomiędzy dwoma różnymi instancjami tego rodzaju modelu mogą zajść rozbieżności w doborze istotnych cech.</p>
+<h4 id="3-dokonaj-analizy-wynik%C3%B3w-przy-pomocy-feature-importance-explain-model">3. Dokonaj analizy wyników przy pomocy: Feature importance, Explain model.</h4>
+<h5 id="feature-importance">Feature Importance</h5>
+<p><em>Feature Importance</em> pokazuje ważność poszczególnych cech w stosunku do wybranej metody oceny skuteczności klasyfikacji modelu. W przeciwieństwie do <em>Explain Model</em>, nie są tu istotne cechy przypisujące daną próbkę do wybranej klasy, lecz cechy które generalnie mają największy wpływ skuteczność działania modelu.</p>
+<p>Jako metrykę skuteczności można wybrać wiele wartości, jak AUC/F1/Precision/Recall i w zależności od tego wyboru, ulegają zmianie wagi istotności cech dla modelu, co może skutkować w różnej kolejności najważniejszych cech dla różnych kryteriów oceny. W dalszej części tego podpunktu skupimy się wyłącznie na ocenie Area Under the Curve (AUC).</p>
+<ul>
+<li>
+<p><em>Random Forest</em><br>
+<img src="_img/feat_imp_rand_forest.png" alt=""></p>
+</li>
+<li>
+<p><em>Gradient Boosting</em><br>
+<img src="_img/feat_imp_grad_boost.png" alt=""></p>
+</li>
+<li>
+<p><em>Tree</em><br>
+<img src="_img/feat_imp_tree.png" alt=""></p>
+</li>
+</ul>
+<p>Dla wszystkich trzech modeli zestaw najważniejszych cech jest taki sam, a mianowicie: &quot;Flavanoids&quot;, &quot;Color intensity&quot; oraz &quot;Proline&quot;, jednakże różnice w budowie i zasadzie działania każdego z modeli uwidacznia się różną wagą istotności tych cech dla każdego z nich.</p>
+<p><em>Random Forest</em> bazuje poprawność swojej klasyfikacji głównie na cesze &quot;Flavanoids&quot;, a pozostałe dwie są właściwie trzykrontnie mniej istotne. W przypadku klasyfikacji przez <em>Tree</em>, &quot;Flavanoids&quot; jest wciąż najważniejszą cechą, lecz &quot;Color intensity&quot; prawie się z nią zrównuje, natomiast dla widgetu <em>Gradient Boosting</em> to &quot;Color intensity&quot; staje się najskuteczniejszym dyskriminatorem podanego zbioru danych, a &quot;Flavanoids&quot; wraz z &quot;Proline&quot; są wciąż bardzo skuteczne, lecz ustępują &quot;Color intensity&quot;.</p>
+<h5 id="explain-model">Explain Model</h5>
+<p>Używając tego widgetu uzyskujemy wytłumaczenie, jakie wartości dla konkretnych cech powodowały przypisanie próbki do wybranej klasy, i jak duży wpływ miały one na wybór klasy docelowej.</p>
+<p>Przyjżyjmy się w pierwszej kolejności wyłumaczeniu dzaiałnia modelu <em>Random Forest</em>, na podstawie którego opiszę wyniki pracy widgetu.</p>
+<ul>
+<li><em>Random Forest</em>
+<ul>
+<li>Klasa: 1<br>
+<img src="_img/exp_rand_forest_1.png" alt=""></li>
+<li>Klasa: 2<br>
+<img src="_img/exp_rand_forest_2.png" alt=""></li>
+<li>Klasa: 3<br>
+<img src="_img/exp_rand_forest_3.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p>Generalnie czym dana kropka jest dalej odsunięta od osi środkowej, tym większy ma wpływ na przypisanie do danej klasy. Jeśli jest daleko po stronie lewej, to ten wpływ jest negatywny, po stronie prawej, pozytywny. Kolor kropek oznacza towarzyszące im wartości, barwa ciepła to duża wartość, a zimna, mała.</p>
+<p>Przeanalizujmy trzy cechy, które wyróżniliśmy jako najistotniejsze dla oceny AUC w poprzednim podpunkcie, czyli:  &quot;Flavanoids&quot;, &quot;Color intensity&quot; oraz &quot;Proline&quot;.</p>
+<p>Dla klasy 1 faktycznie mają one punkty najdalej rozrzucone od osi środkowej, tak samo dla klasy 2, co udowadnia słuszność obserwacji poczynionej w widgecie <em>Feature Importance</em>. Natomiast dla klasy 3 &quot;Proline&quot; ma niewielki wpływ na przypisanie tej klasy, a &quot;Color intensity&quot; ma ten wpływ tylko niewiele większy, lecz istotność tych cech dla klas 1 i 2 wystarcza, aby były one generalnie ważne dla modelu.</p>
+<p>Spójrzmy jeszcze na wartości cechy &quot;Color intensity&quot; dla klasy 1. Okazuje się, że małe wartości dla tej cechy wpływają negatywnie na wybór klasy 1, duże wartości trochę pozytywnie, natomiast największą wagę wnoszą wartości ze środka przedziału tej cechy. Widzimy również, że próbek o umiarkowanej i dużej wielkości wartości, które wnoszą podobny wkład do jakości klasyfikacji modelu jest całkiem sporo, stąd są widoczne ich skupiska na diagramie.</p>
+<p>Ciekawym przypadkiem wartym odnotowania, jest duże skupisko próbek o dużej wartości cechy &quot;Proline&quot;, które to negatywnie wpływają na przypisanie ich do klasy 2.</p>
+<p>Wszystkie cechy dla dowolnego wybranego modelu można analizować dokładnie w taki sam sposób, jak te powyżej.</p>
+<ul>
+<li>
+<p><em>Gradient Boosting</em></p>
+<ul>
+<li>Klasa: 1<br>
+<img src="_img/exp_grad_boost_1.png" alt=""></li>
+<li>Klasa: 2<br>
+<img src="_img/exp_grad_boost_2.png" alt=""></li>
+<li>Klasa: 3<br>
+<img src="_img/exp_grad_boost_3.png" alt=""></li>
+</ul>
+</li>
+<li>
+<p><em>Tree</em></p>
+<ul>
+<li>Klasa: 1<br>
+<img src="_img/exp_tree_1.png" alt=""></li>
+<li>Klasa: 2<br>
+<img src="_img/exp_tree_2.png" alt=""></li>
+<li>Klasa: 3<br>
+<img src="_img/exp_tree_3.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p>Zarówno dla <em>Gradient Boosting</em>, jak i <em>Tree</em> rozrzut wartości od osi środkowej dla cech &quot;Flavanoids&quot;, &quot;Color intensity&quot; oraz &quot;Proline&quot; potwierdzają słuszność wcześniejszych obserwacji na temat ważności tych cech dla modelu.</p>
+<p>Analizę wielkości wartości adekwatnej do wybranej klasy można przeprowadzić w sposób analogiczny do zapisanego powyżej, więc nie będę jej przeprowadzał dla każdego diagramu z osobna.</p>
+<p>Ciekawą obserwację można poczynić przyglądając się rozkładowi próbek przy klasyfikacji modelem drzewa decyzyjnego. W przeciwieństwie do pozosatałych dwóch modeli opartych na lesie losowym, próbki w tym przypadku występują w dużej mierze w skupiskach, a nie rozproszone po całej osi X. Wynika to z charakteru modelu <em>Tree</em>, który to poprzez swoją skokową strukturę podziału próbek - kolejny podział co poziom jednego drzewa - prowadzi do powstania skupisk jak na diagramie.</p>
+<h4 id="4-wyt%C5%82umacz-explain-prediction-dla-obu-modeli-dlaczego-wybrane-2-przyk%C5%82ady-testowe-zosta%C5%82y-zaklasyfikowane-do-danych-klas-por%C3%B3wnaj-wynik-dzia%C5%82ania-dla-r%C3%B3%C5%BCnych-modeli-przedyskutuj-kr%C3%B3tko-otrzymany-wynik">4. Wytłumacz (Explain prediction) dla obu modeli dlaczego wybrane (2) przykłady testowe zostały zaklasyfikowane do danych klas. Porównaj wynik działania dla różnych modeli. Przedyskutuj krótko otrzymany wynik.</h4>
+<h5 id="przyk%C5%82ad-pierwszy">Przykład pierwszy</h5>
+<p>Zacznijmy od przypadku pierwszego, który to wybrałem za pomocą widgetu <em>Explain predictions</em>. Przypomnę, że jest to próbka z klasy 2, która przez model <em>Random Foreset</em> została również wysoko oceniona dla klasy 1.</p>
+<ul>
+<li><em>Random Forest</em>, Klasa: 1<br>
+<img src="_img/case-1_exp_pred_rand_forest_cl1.png" alt=""></li>
+<li><em>Random Forest</em>, Klasa: 2<br>
+<img src="_img/case-1_exp_pred_rand_forest_cl2.png" alt=""></li>
+<li><em>Random Forest</em>, Klasa: 3<br>
+<img src="_img/case-1_exp_pred_rand_forest_cl3.png" alt=""></li>
+</ul>
+<p>Faktycznie możemy zobaczyć, że ocena tej próbki w kontekście klasy 1 jest dość wysoka, a dodatkowo tak ważne cechy, jak &quot;Color Intensity&quot; oraz &quot;Flavanoids&quot; przemawiają za wyborem klasy 1. Jednakże klasa 2 otrzymuje jeszcze wyższe noty, a to głównie za sprawą trzeciej istotnej cechy, czyli &quot;Proline&quot;, która to była silnie negatywna przy wyborze klasy 1.</p>
+<ul>
+<li><em>Tree</em>, Klasa: 1<br>
+<img src="_img/case-1_exp_pred_tree_cl1.png" alt=""></li>
+<li><em>Tree</em>, Klasa: 2<br>
+<img src="_img/case-1_exp_pred_tree_cl2.png" alt=""></li>
+<li><em>Tree</em>, Klasa: 3<br>
+<img src="_img/case-1_exp_pred_tree_cl3.png" alt=""></li>
+</ul>
+<p>Patrząc na zasady na jakich próbka ta została zaklasyfikowana przez drzewo decyzyjne, można stwierdzić, że model ten już przy pierwszym podziale wykluczył klasę 1 i 3 dla tej próbki, a to przez nieodpowiednie wartości dla cechy &quot;Proline&quot; i &quot;Flavanoids&quot; odpowiednio. Cechy te ewidentnie przybrały wartości adekwatne dla klasy 2.</p>
+<p>Mała ilość rozważanych cech przez widget <em>Explain prediction</em> odpowiada zasadom działania modelu drzewa decyzyjnego, który to skupia się wyłącznie na najważniejszych cechach, a nie jak w przypadku lasu losowego, dolosowuje sobie mniej istotne cechy do uwzględnienia przy podziale próbek.</p>
+<h5 id="przyk%C5%82ad-drugi">Przykład drugi</h5>
+<p>Przypadek drugi został wyselekcjonowany przy użyciu widgegu <em>ICE</em> i przedstawia on próbkę z klasy 2, która to ma zdecydowanie niższą zmianą prawdopodobieństwa dla cechy &quot;Color intensity&quot; w porównaniu z innymi próbkami tej klasy.</p>
+<ul>
+<li><em>Random Forest</em>, Klasa: 1<br>
+<img src="_img/case-2_exp_pred_rand_forest_cl1.png" alt=""></li>
+<li><em>Random Forest</em>, Klasa: 2<br>
+<img src="_img/case-2_exp_pred_rand_forest_cl2.png" alt=""></li>
+<li><em>Random Forest</em>, Klasa: 3<br>
+<img src="_img/case-2_exp_pred_rand_forest_cl3.png" alt=""></li>
+</ul>
+<p>W tym przypadku co do trafności predykcji nie ma żadnych wątpliwości, klasyfikacja do klasy 2 jest tu niekwestionowana i to zapewne komunikował diagram ICE, mianowicie że nawet przy zmianie wartości cechy &quot;Color intensity&quot;, pozostałe cechy tak jednoznacznie określają klasę 2 dla tej próbki, że prawdopodobieństwo umieszczenia próbki w klasie 2 wciąż pozostanie podobne.</p>
+<ul>
+<li><em>Tree</em>, Klasa: 1<br>
+<img src="_img/case-2_exp_pred_tree_cl1.png" alt=""></li>
+<li><em>Tree</em>, Klasa: 2<br>
+<img src="_img/case-2_exp_pred_tree_cl2.png" alt=""></li>
+<li><em>Tree</em>, Klasa: 3<br>
+<img src="_img/case-2_exp_pred_tree_cl3.png" alt=""></li>
+</ul>
+<p>Klasyfikacja przy użyciu drzewa decyzyjnego jest równie jednoznaczna, co w przypadku lasu losowego, i również wskazuje klasę 2 dla tej próbki. Co więcej widzimy, że ilość uwzględnionych cech przy klasyfikacji ogranicza się tylko do tych najważniejszych, tak jak tego oczekujemy od tego modelu.</p>
+<h3 id="podsumowanie">Podsumowanie</h3>
+<p>Laboratorium to pokazało ciekawy sposób analizy istotności cech zbioru danych, oraz ewidentną zależność pomiędzy wybranym modelem predykcyjnym, a zbiorem ważnych cech.</p>
+<p>Interpretowalność przebadanych modeli lasu losowego oraz drzewa decyzyjnego stoi na bardzo wysokim poziomie, co umożliwia skuteczne ich użycie przy eksploracji danych.</p>
+
+</body>
+</html>
