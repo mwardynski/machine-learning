@@ -1,1 +1,11 @@
 .venv
+lab4-5/.venv
+lab4-5/.gitignore
+lab4-5/lab1_statistical_models
+lab4-5/lab2_neural_models
+lab4-5/lectures
+lab4-5/LICENSE
+lab4-5/poetry.lock
+lab4-5/pyproject.toml
+lab4-5/README.md
+lab4-5/requirements.txt
