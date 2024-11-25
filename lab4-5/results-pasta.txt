@@ -1,0 +1,23 @@
+Pasta - Last value:
+MASE: 0.85
+
+Pasta - Mean value:
+MASE: 1.10
+
+Pasta - ARIMA:
+MASE: 1.11
+
+Pasta - ETS:
+MASE: 0.94
+
+Pasta - Multioutput linear regression:
+MASE: 1.10
+
+Pasta - LTSF Linear:
+MASE: 0.94
+
+Pasta - LTSF DLinear:
+MASE: 0.95
+
+Pasta - LTSF NLinear:
+MASE: 1.06

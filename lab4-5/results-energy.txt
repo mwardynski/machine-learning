@@ -1,0 +1,11 @@
+Energy - Last value:
+MASE: 2.36
+
+Energy - Mean value:
+MASE: 3.44
+
+Energy - ARIMA:
+MASE: 2.77
+
+Energy - ETS:
+MASE: 3.17
