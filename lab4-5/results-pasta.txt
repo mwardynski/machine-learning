@@ -17,7 +17,13 @@ Pasta - LTSF Linear:
 MASE: 0.94
 
 Pasta - LTSF DLinear:
-MASE: 0.95
+MASE: 0.94
 
 Pasta - LTSF NLinear:
-MASE: 1.06
+MASE: 1.05
+
+Pasta -  NBEATS:
+MASE: 0.87
+
+Pasta -  TSMixer:
+MASE: 0.87

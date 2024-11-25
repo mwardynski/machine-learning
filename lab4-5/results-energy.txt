@@ -25,3 +25,9 @@ Execution Time: 548.0227 seconds
 Energy - LTSF NLinear:
 MASE: 1.72
 Execution Time: 366.5851 seconds
+
+Energy -  NBEATS:
+MASE: 2.78
+
+Energy -  TSMixer:
+MASE: 2.83
