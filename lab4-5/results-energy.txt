@@ -9,3 +9,19 @@ MASE: 2.77
 
 Energy - ETS:
 MASE: 3.17
+
+Energy - Multioutput linear regression:
+MASE: 2.18
+Execution Time: 70.5117 seconds
+
+Energy - LTSF Linear:
+MASE: 1.74
+Execution Time: 370.7627 seconds
+
+Energy - LTSF DLinear:
+MASE: 1.90
+Execution Time: 548.0227 seconds
+
+Energy - LTSF NLinear:
+MASE: 1.72
+Execution Time: 366.5851 seconds
