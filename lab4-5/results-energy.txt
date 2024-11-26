@@ -31,3 +31,9 @@ MASE: 2.78
 
 Energy -  TSMixer:
 MASE: 2.83
+
+Energy -  PatchTST:
+MASE: 3.34
+
+Energy -  iTransformer:
+MASE: 3.50
