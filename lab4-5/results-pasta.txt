@@ -31,5 +31,8 @@ MASE: 0.87
 Pasta -  PatchTST:
 MASE: 0.85
 
-Pasta -  iTransformer:
+Pasta - iTransformer:
 MASE: 0.85
+
+Pasta - TimesFM:
+MASE: 0.90
