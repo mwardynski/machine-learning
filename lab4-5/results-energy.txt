@@ -37,3 +37,6 @@ MASE: 3.34
 
 Energy -  iTransformer:
 MASE: 3.50
+
+Energy -  TimesFM:
+MASE: 3.25
