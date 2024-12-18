@@ -11,12 +11,10 @@ Ponieważ chcemy generować przypadki wyjściowe w sposób podobny do danych wej
 #### Zadanie 1.2. Skompiluj model. W tym celu najpierw zdefiniuj loss dla modelu. W przypadku autoenkodera jest to funkcja działająca na wejściach do enkodera oraz wyjściach z dekodera. Do wyboru są różne funkcje! Patrząc na reprezentację danych (wróć do funkcji definiującej preprocessing), wybierz odpowiednią. Uzasadnij swój wybór. (0.25 pkt)
 
 ```python
-autoencoder.compile(optimizer='adam', loss=keras.losses.BinaryCrossentropy)
+autoencoder.compile(optimizer='adam', loss=keras.losses.MeanSquaredError)
 ```
 
-Najlepszą funkcją straty dla rozważanego autoenkodera wydaje mi się być BCE = binarna entropia krzyżowa, a to gdyż świetnie zgadza się z danymi wejściowymi i wyjściowymi modelu, które zawierają się w przedziale [0, 1]. Takimi wartościami określa się prawdopodobieństwa, a entropia krzyżowa bazuje na "Likelihood", które to opiera się na prawdopodobieństwie.
-
-Intuicyjnie: wartości [0, 1] określają prawdopodobieństwo zapalenia się danego piksela, jeśli wartości skorelowanych pikseli na wejściu i wyjściu są określone rozbieżnym prawdopodobieństwem, to najpeniej w jednym przypadku się zapalą, a w drugim nie, przez co wygenerowany obraz nie będzie odpowiadal temu wejściowemu. BCE ukarze model za takie rozbieżności.
+Wartości wejściowymi są wartościami ciągłymi na przedziale [0, 1], a poprzez zastosowanie sigmoidy jako funkcji aktywacji w ostatniej warstwie również wartości wyjściowe przyjmą taki sam przedział. Ponieważ nie klasyfykujemy danych do dwóch osobnych grup, 0 lub 1, lecz obliczamy funkcję kosztu dla dwóch wartości z przedziału ciągłego, dobrze nada się do tego podejście typu MSE, lub jemu podobne np.: RMSE lub MAE.
 
 #### Zadanie 1.3. Wybierz ze zbioru testowego dwa obrazy z różnymi liczbami. Dobierz takie liczby, dla których spodziewasz się, że odkodowanie średniej z ich zenkodowanych reprezentacji będzie miało sens. Wybierz dwie takie pary.
 
@@ -40,7 +38,7 @@ def plot_latent_images(model, n, digit_size=28):
   ...
 ```
 
-Do wygenerowania tablicy liczb wybrałem obszar o największej gęstości występowania zakodowanych elementów, tj. x pomiędzy -2 i 2, a y między -2.5 i 2.5.
+Do wygenerowania tablicy liczb wybrałem obszar o największej gęstości występowania zakodowanych elementów, tj. x i y pomiędzy -2.5 i 2.5.
 
 ![Zadanie 1.3 - Tablica liczb z wybranego obszaru](_img/1_3_number_table.png)
 
@@ -81,6 +79,6 @@ Dla których powyższy kod produkuje następujący wynik:
 
 Pierwsza para wypadła całkiem nieźle, gdyż faktycznie uśrednienie liczb 6 i 8 wskazywało na powstanie czegoś na kształt 5 lub 3. Wygenerowany kształt bardzo przypomina 3, choć dość rozmazane.
 
-Druga para, 4 i 2, wygenerowała tylko rozmazane 4, a więc jedną z wybranych liczb, a oczekiwałem 8 lub 3. Tym razem się nie udało wygenerować nowej liczby, najwyraźniej uśrednienie wybranych 4 i 2 znajdowało się wciąż w obszarze dominacji 4.
+Druga para, 4 i 2, wygenerowała coś, co jest bardzo podobne do 3 albo 9. W tym wypadku również oczekiwałem 5 lub 3, czyli właściwie udało się trafić, o ile bardzo obniżymy swoje oczekiwania co do czytelności wygenerowanego znaku.
 
-Jak widać nie zawsze udaje się wygenerować nowe liczby, natomiast obydwa rezultaty mają część wspólną: są mocno rozmazane.
+Jak widać nie zawsze udaje się wygenerować jednoznaczne liczby, natomiast obydwa rezultaty mają część wspólną: są mocno rozmazane.
