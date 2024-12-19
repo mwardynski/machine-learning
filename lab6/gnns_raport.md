@@ -82,3 +82,32 @@ Pierwsza para wypadła całkiem nieźle, gdyż faktycznie uśrednienie liczb 6 i
 Druga para, 4 i 2, wygenerowała coś, co jest bardzo podobne do 3 albo 9. W tym wypadku również oczekiwałem 5 lub 3, czyli właściwie udało się trafić, o ile bardzo obniżymy swoje oczekiwania co do czytelności wygenerowanego znaku.
 
 Jak widać nie zawsze udaje się wygenerować jednoznaczne liczby, natomiast obydwa rezultaty mają część wspólną: są mocno rozmazane.
+
+## 2. AutoEnkoder wariacyjny (VAE)
+
+#### Zadanie 2.1. Dlaczego powyższa implementacje CVAE nie stosuje żadnej aktywacji w ostatniej warstwie enkodera? Czy jakaś funkcja by się tutaj nadawała? (0.25pkt)
+
+Warstwa latentna zwaraca parametry rozkładu Gaussa, takie jak średnia i odchylenie standardowe, czy też jak w naszym przypadku logarytm z wariancji. Obydwie te wartości należą do zbioru liczb rzeczywistych i dla zapewnienia lepszych efektów uczenia się enkodera, wartości te powinny pozostać bez zmian na wyjściu z niego.
+
+Przyjrzyjmy się kilku funkcjom aktywacji:
+- ReLU - zeruje wartości ujemne
+- Sigmoida - ma dużą zmienność dla dziedziny w okolicach 0, a w pozostałych przedziałach dziedziny zmienia się znacznie wolniej
+- tanh - podobnie do sigmoidy
+
+Zastosowanie funkcji aktywacji zaburzyłoby tylko wartości rozkładu, którego specyfiki próbuje się nauczyć enkoder, uwaga ta tyczy się wszystkich funkcji nieliniowych. Funkcje liniowe natomiast tylko przeniosą przedział wartości wyjściowych, więc ma z nich w tym przypadku żadnego porzytku.
+
+Na podstawie powyższej argumentacji stwierdzam, że w tym przypadku do poprawy jakości modelu nie nada się żadna funkcja aktywacji.
+
+#### Zadanie 2.2. Skomentuj wynik uzyskany przy użyciu funkcji plot_latent_images. Zwróć uwagę na jakość/sensowność rysowanych liczb. Porównaj wykres do analogicznego wykresu dla modelu AE. Zamieść w raporcie wykresy. (0.25pkt)
+
+```python
+def plot_latent_space(model, data):
+  mean, logvar = model.encode(data)
+  std = tf.exp(logvar / 2)
+  
+  plt.figure(figsize=(10, 10))
+  plt.errorbar(mean[:, 0], mean[:, 1], xerr=std[:, 0], yerr=std[:, 1], ecolor='red', fmt='o', markersize=1, )
+  plt.show()
+```
+
+![Zadanie 2.2 - Wykres średnich i odchyleń standardowych](_img/2_2_errorbar.png)
