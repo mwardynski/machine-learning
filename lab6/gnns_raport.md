@@ -1,6 +1,9 @@
 Marcin Wardyński  
 wtorek, 9:45
 
+### Uwaga do sprawozdania:
+W notatniku dodałem `seed=42` do funkcji `shuffle` przy wybieraniu zbioru treningowego, walidacyjnego i testowego dla każdego z modeli, żeby zachować powtarzalność wyników. Jendakże wyniki do zadania 1 i 2 zostały zebrane jeszcze wcześniej, stąd wykresy w sprawozdaniu różnią się od obecnych wykresów w notatniku.
+
 ## 1. AutoEnkoder (AE)
 
 #### Zadanie 1.1 - Dlaczego sigmoid jest odpowiednią funkcją aktywacji w ostatniej warstwie dekodera w tym przypadku? (0.25pkt)
