@@ -21,6 +21,10 @@ autoencoder.compile(optimizer='adam', loss=keras.losses.MeanSquaredError)
 
 Wartości wejściowymi są wartościami ciągłymi na przedziale [0, 1], a poprzez zastosowanie sigmoidy jako funkcji aktywacji w ostatniej warstwie również wartości wyjściowe przyjmą taki sam przedział. Ponieważ nie klasyfykujemy danych do dwóch osobnych grup, 0 lub 1, lecz obliczamy funkcję kosztu dla dwóch wartości z przedziału ciągłego, dobrze nada się do tego podejście typu MSE, lub jemu podobne np.: RMSE lub MAE.
 
+![Zadanie 1.2 - Przykład wygenerowanych liczb dla AE](_img/1_2_gen_comp.png)
+
+Jak widać, większość wygenerowanych cyfr odpowiada im orgynałom, tylko dla "4" generowana liczba niebezpiecznie zbliża się w wyglądzie do "9", a liczby wygenerowane dla "9" i "5" są odpowiednio bardziej podobne do "7" i "3" zamiast do zadanych protoplastów.
+
 #### Zadanie 1.3. Wybierz ze zbioru testowego dwa obrazy z różnymi liczbami. Dobierz takie liczby, dla których spodziewasz się, że odkodowanie średniej z ich zenkodowanych reprezentacji będzie miało sens. Wybierz dwie takie pary.
 
 Przygotowanie:
