@@ -1,3 +1,8 @@
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });
+</script>
+
 Marcin Wardyński  
 wtorek, 9:45
 
@@ -142,9 +147,9 @@ def plot_latent_space(model, data):
 
 Jak już pokrótce zauważyłem w poprzednim zadaniu, punkty w wykresie dla VAE są gęściej upakowane, a ich przedział wartości jest mniejszy, niż dla AE.
 
-Uwzględniają odchylenia standardowe, wciąż widać znaczne przecięcia pomiędzy sąsiadującymi punktami, które mogą reprezentować różne liczby, czego efektem jest przenikanie się reprezentacji cyfr tworzonych przez enkoder - patrz wyniki z zadania 2.2.
+Uwzględniając odchylenia standardowe, wciąż widać znaczne przecięcia pomiędzy sąsiadującymi punktami, które mogą reprezentować różne liczby, czego efektem jest przenikanie się reprezentacji cyfr tworzonych przez enkoder - patrz wyniki z zadania 2.2.
 
-Ciekawym elementem wykresu dla VAE jest grupa w prawej-dolnej części wykresu, która się znacznie odłączyła od reszty. Porównując wykres z tablicą liczb dla VAE można uznać, że jest grupa generująca zera.
+Ciekawym elementem wykresu dla VAE jest grupa w prawej-dolnej części wykresu, która się znacznie odłączyła od reszty. Porównując wykres z tablicą liczb dla VAE można uznać, że jest to grupa generująca zera.
 
 #### Zadanie 2.4. Dla tych samych par obrazów, na których pracowałaś/eś w ostatnim zadaniu dot. AE, przygotuj reprezentacje ukryte z pomocą wytrenowanego VAE i odkoduj średnie z reprezentacji. Skomentuj wyniki, porównaj z wynikami z AE.
 
@@ -198,7 +203,7 @@ Oczywiście, skoro rozlokowanie liczb w przestrzeni 2D jest odmienne dla AE i VA
 
 Formuła KL-divergence dla dwóch rozkładów gaussowskich wygląda następująco:
 
-$$ \mathcal{D} [\mathcal{N}(\mu(X), \Sigma(X)) || \mathcal{N}(0, I)] = 
+$$ D [N(\mu(X), \Sigma(X)) || N(0, I)] = 
 \frac{1}{2} (tr(\Sigma(X)) + (\mu(X))^T (\mu(X)) - k - log det (\Sigma(X)))$$
 
 którą można zapisać w postaci funkcji python w następujący sposób:
@@ -237,3 +242,202 @@ Funkcja `compute_loss_gauss_kl` wykorzystująca `kl_div` przyjmuje następując�
 ```
 
 Wyniki uzyskane przy użyciu `compute_loss_gauss_kl` nie różnią się niczym od tych uzyskanych stosując bazową funkcję straty `compute_loss`, a wartość `ELBO` dla obydwu podejść po ukończeniu treningu jest prawie taka sama i wynosi ok 158.
+
+## 3. Conditioned VAE
+
+Uzupełniona funkcja do generowania siatek liczb i wyboru podanej liczby z nich:
+
+```python
+def conditioned_mnist(x, y, num_imgs=2):
+  x_res = np.empty(shape=(x.shape[0]*num_imgs, x.shape[1]*3, x.shape[2]*3), dtype='float32')  # pusta macierz z wynikami - obrazy x
+  y_res = np.empty(shape=(y.shape[0]*num_imgs, 12), dtype='float32')  # pusta macierz z wynikami - wektor y: etykieta (10 liczb), pozycja x, pozycja y
+  empty_res = np.zeros(shape=(x.shape[1]*3, x.shape[2]*3))  # obraz wynikowy w docelowym rozmiarze, wypełniony zerami
+
+  for el, (arr, label) in enumerate(zip(x, y)):
+    to_sample_x = np.empty((9, x.shape[1]*3, x.shape[2]*3), dtype='float32')  # macierz przechowująca 9 wersji obrazu
+    to_sample_y = np.empty((9, 12), dtype='float32')  # macierz przechowująca 9 wersji etykiet
+    for i in range(3):
+      for j in range(3):
+        curr_x = empty_res.copy()
+        curr_x[i*x.shape[1]: (i+1)*x.shape[1], j*x.shape[2]: (j+1)*x.shape[2]] = arr.reshape((x.shape[1], x.shape[2]))
+        curr_y = [*label, i/2, j/2]  # normalizacja
+        to_sample_x[3*i+j] = curr_x
+        to_sample_y[3*i+j] = curr_y
+    idxs = np.random.choice(np.arange(0, 9), size=num_imgs, replace=False)  # wylosuj num_imgs indeksów z zakresu [0; 8] jako wektor numpy
+    x_res[el*num_imgs: (el+1)*num_imgs] = to_sample_x[idxs]
+    y_res[el*num_imgs: (el+1)*num_imgs] = to_sample_y[idxs]
+  x_res = x_res.reshape((-1, x.shape[1]*3, x.shape[2]*3, 1))
+  return x_res, y_res
+```
+
+Budowa sieci neuronowych enkodera i dekodera:
+
+W poprzednim zadaniu zarówno enkoder, jak i dekoder od pewnego poziomu operują na obrazach 14x14. Tą część możemy zostawić, natomiast dla enkodera dołączymy dodatkową warstwę konwolucyjną, która zmniejsza wejściowy obraz 42x42, do pożądanych 14x14. Odpowiednio dla dekodera dołączamy warstwę dekonwolucyjną zwiększającą obraz z 14x14 do 42x42.
+
+Warstwy VAE wyglądają w następujący sposób:
+
+```python
+def prepare_encoder(self):
+    input_img = tf.keras.layers.Input(shape=(42, 42, 1))
+    input_cond = tf.keras.layers.Input(shape=(12, ))
+    #convolution 42x42 to 14x14, kernel overlapping
+    x = tf.keras.layers.Conv2D(filters=32, kernel_size=4, strides=(3, 3), activation='relu')(input_img)
+    x = tf.keras.layers.Conv2D(filters=64, kernel_size=3, strides=(2, 2), activation='relu')(x)
+    x = tf.keras.layers.Flatten()(x)
+    x = tf.keras.layers.Concatenate()([x, input_cond])
+    # No activation
+    x = tf.keras.layers.Dense(latent_dim + latent_dim)(x)
+    return  tf.keras.Model([input_img, input_cond], [x])
+
+  def prepare_decoder(self):
+    input_latent = tf.keras.layers.Input(shape=(latent_dim,))
+    input_cond = tf.keras.layers.Input(shape=(12, ))
+    inputs = tf.keras.layers.Concatenate()([input_latent, input_cond])
+    x = tf.keras.layers.Dense(units=7*7*32, activation=tf.nn.relu)(inputs)
+    x = tf.keras.layers.Reshape(target_shape=(7, 7, 32))(x)
+    x = tf.keras.layers.Conv2DTranspose(filters=64, kernel_size=3, strides=2, padding='same',activation='relu')(x)
+    #deconvolution 14x14 to 42x42, kernel overlapping
+    x = tf.keras.layers.Conv2DTranspose(filters=32, kernel_size=4, strides=3, padding='same',activation='relu')(x)
+    # No activation
+    x = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=4, strides=1, padding='same')(x)
+    return  tf.keras.Model([input_latent, input_cond], [x])
+```
+W funcki kosztu liczymy logity w następujący sposób:
+
+```python
+x_logit = model.decode((z, cond))
+```
+#### Zadanie 3.1. Sprawdź jakość modelu dla 3 różnych wartości latent_dim
+
+Dla tak przygotowanego CVAE uruchomiłem trening w zaleconych wariantach:
+
+- Neurony warstwy latentnej: 2, liczba epok: 10
+![Zadanie 3.1 - CVAE: num_latent=2, epoch=10](_img/3_l_2_e_10.png)
+- Neurony warstwy latentnej: 25, liczba epok: 20
+![Zadanie 3.1 - CVAE: num_latent=25, epoch=20](_img/3_l_25_e_20.png)
+- Neurony warstwy latentnej: 100, liczba epok: 50
+![Zadanie 3.1 - CVAE: num_latent=100, epoch=50](_img/3_l_100_e_50.png)
+
+Wizualnie wszystkie wyniki wyglądają bardzo podobnie i nie sposób powiedzieć, który z nich jest najlepszy. Generalnie wszystkie uważam za wystarczająco dobre jakościowo. Natomiast wartość ELBO wyszła najlepsza dla największych badanych hiperparametrów, więc przy tym modelu zostaję w dalszych zadaniach: `latent_dim = 100, epoch = 50`
+
+#### Zadanie 3.2. Dla każdego z 9 możliwych wektorów  przepuść przez dekoder reprezentację z wybranego przypadku testowego
+
+Poniższy kod został przygotowany do zrealizowania zadań 3.2 i 3.3. W zależności od użycia wygeneruje siatkę liczb na podstawie przypadku testowego, lub dla podanej etykiety i szumu wygenrowanego z rozkładu gaussowskiego. W zależności od przypadku należy uruchomić `generate_test_cases` z wartością `None`, żeby użyć kolejnego przypadku testowego, lub podać porządaną wartość liczbową.
+
+Dla tego zadania uruchomienie wygląda w następujący sposób:
+
+```python
+test_cases = generate_test_cases(None)
+sample_and_viz(test_cases)
+```
+
+![Zadanie 3.2 - wynik](_img/3_2_result_mash.png)
+
+Generacja wyszła bardzo dobrze dla wybranego przypadku testowego. Jedynie cyfra wygenerowana w środkowej komórce nie bardzo przypomina "5", ale w pozostałych komórkach wynik można opisać za bez zarzutu.
+
+Jednak nie zawsze udaje się otrzymać tak dobre wyniki, a zwłaszcza korzystając z modeli o mniejszej liczbie neuronów w warstwie latentnej, które również sprawdziłem, lecz wyników nie zamieściłem w sprawozdaniu. Zbyt mała liczba neuronów w warstwie latentnej sprzyja niewystarczającej separacji poszczególnych przypadków, przez co możemy obserwować przenikanie się elementów z różnych grup - dokładnie tak samo, jak to miało miejsce w dwóch poprzednich sekcjach ćwiczenia, z tym że tym razem to przenikanie przybiera trochę inny wygląd. Cyfry są rzadziej rozmazane, ale potrafią pojawić się w nieodpowiednich komórkach.
+
+Do sprawozdania dołączam kilka plików gif, które prezentują przebieg uczenia się poszczególnych modeli. Przyglądając się CVAE.gif można zauważyć etapy, gdy faktycznie niektóre cyfry były wyświetlane w komórkach różnych, od tych zadanych przez nasze warunki.
+
+#### Zadanie 3.3. Dla każdego z 9 możliwych wektorów  przepuść przez dekoder szum z rozkładu normalnego i wybraną etykietę
+
+Wywołanie funkcji dla tego zadania:
+
+```python
+test_cases = generate_test_cases(3)
+sample_and_viz(test_cases)
+```
+
+I otrzymany wynik:
+
+![Zadanie 3.3 - wynik](_img/3_3_result_mash.png)
+
+Tym razem jakość generowanych wyników jest słabsza, niż w poprzednim zadaniu. Wiąże się to z tym, że zadenie zlecone dekoderowi jest trudniejsze, a to gdyż na wejściu nie dostaje on wartości *z* wychodzących z enkodera, a szum z rozkładu gaussowskiego.
+
+Właściwym jest oczekiwać wobec dekodera możliwości wygenerowania zadanego przypadku na podstawie szumu i dostarczonych warunków, jednakże najwyraźniej nasz model wciąż nie jest w stanie zawrzeć w swoich strukturach pełni informacji potrzebnej do właściwej generacji wyłącznie na podstawie dostarczonych warunków.
+
+Przyjrzyjmy się bliżej otrzymanym wynikom, pola 1,1, 2,2 oraz cały trzeci wiersz nie stanowią ładnej reprezentacji zadanej cyfry "3". Dodatkowo w ostatniej komórce, 3,3, pojawił się jakiś artefakt obok wygenerowanej cyfry.
+
+Jak i w poprzednim przypadku widać, że warstwa latentna nie wyizolowała w dostateczny sposób przypadków do wygenerowania czytelnego i pożądanego obrazu wyjściowego. Najpewniej możnaby użyskać lepsze wyniki zwiększając pojemność sieci i jednocześnie wydłużając ilość epok treningu. Może również pomóć dalsze zwiększenie wielkości warstwy latentnej, ale obecne 100 węzłów wydaje się wystarczającą liczbą, a wręcz dużą. Oczywiście otwartym pytaniem pozostaje, czy ilość danych treningowych wystarczy, żeby wykorzystać potencjał sieci przy jej zwiększonej pojemności.
+
+## Conditioned GAN
+
+Definicja generatora zosała uzupełniona o specyfikację wejścia w następujący sposób:
+
+```python
+  inputs = tf.keras.layers.Concatenate(axis=1)([input_img, input_cond])
+```
+
+Dyskryminator został uzupełniony następującymi warstwami dla wejścia `input_cond`:
+
+```python
+  x = tf.keras.layers.Dense(256, activation='relu')(x)
+  x = tf.keras.layers.Dropout(0.3)(x)
+  x = tf.keras.layers.Dense(128, activation='relu')(x)
+  x = tf.keras.layers.Dropout(0.3)(x)
+```
+Funkcja kosztu po uzupełnieniu wygląda w następujący sposób:
+
+```python
+def discriminator_loss(real_output, fake_output):
+    # real_output, fake_output - predykcje dyskryminatora
+    real_loss = cross_entropy(tf.ones_like(real_output), real_output)
+    fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
+    total_loss = real_loss + fake_loss
+    return total_loss
+```
+
+Poniżej przygotowana funkcja trenująca pojedyńczy krok:
+
+```python
+@tf.function
+def train_step(data):
+    images, cond, noise_cond = data
+    batch_size = tf.shape(images)[0]
+
+    noise = tf.random.normal([batch_size, noise_dim])
+
+    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+      generated_images = generator([noise, noise_cond], training=True)
+
+      real_output = discriminator([images, cond], training=True)
+      fake_output = discriminator([generated_images, noise_cond], training=True)
+
+      gen_loss = generator_loss(fake_output)
+      disc_loss = discriminator_loss(real_output, fake_output)
+
+    gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
+    gradients_of_discriminator = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
+
+    generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
+    discriminator_optimizer.apply_gradients(zip(gradients_of_discriminator, discriminator.trainable_variables))
+```
+
+Dla danych w tej części ćwiczenia, tak przygotowanym modelem, trening zajął ok 90 minut, a przykład wygenerowanych danych testowych wygląda obiecująco:
+
+![Zadanie 4 - efekt treningu](_img/4_training_result.png)
+
+#### Zadanie 4.1. Wygeneruj po jednym obrazie z każdą liczbą z pomocą generatora. Oceń jakość wyników.
+
+Przygotowałem funkcję generującą wytrenowanym modelem liczby z przedziału [0, 9]:
+
+```python
+fig = plt.figure(figsize=(12, 5))
+for i in range(10):
+    init_label = np.zeros(10)
+    init_label[i] = 1
+    num_label = tf.constant(init_label.reshape(1, -1))
+
+    noise = tf.random.normal([1, latent_dim])
+    
+    generated_image = generator([noise, num_label], training=False)
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(generated_image[0, :, :, 0], cmap='gray')
+    plt.axis('off')
+
+plt.show()
+```
+
+![Zadanie 4 - liczby [0, 9] wygenerowane przez GAN](_img/4_1_gen_numbers.png)
+
+Jak widać wyniki wyglądają dobrze, liczby są czytelne, nie rozmazane i trudne do pomylenia. Reprezentacja jest dużo czytelniejsza, niż w przypadku AE i VAE, a nawet CVAE. Pokazuje to wyższość modelu GAN, gdy został on odpowiednio wytrenowany, czyli gdy generator potrafi dobrze oszukać dyskriminator wygenerowanymi wartościami, a dyskryminator nie stał się "wszechwiedzący" i niemożliwy do oszukania - czyli gdy układ generator-dyskriminator pozostaje w równowadze.
