@@ -8,6 +8,7 @@ pandas
 scikit-learn
 xgboost
 tensorflow
+tensorflow-datasets
 tensorflow_docs
 tensorflow_probability
 tf-keras
