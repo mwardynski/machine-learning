@@ -89,6 +89,14 @@ def flatten_image(X_train, X_test):
     
     return X_train, X_test
 
+def extend_images_to_4d(X_train, X_test):
+  X_train = X_train.reshape((X_train.shape[0], 28, 28, 1)) / 255.
+  X_train.astype(np.uint8)
+
+  X_test = X_test.reshape((X_test.shape[0], 28, 28, 1)) / 255.
+  X_test.astype(np.uint8)
+
+  return X_train, X_test
 
 
 def get_dataset(dataset_name, print_sample_number):
@@ -104,4 +112,29 @@ def get_dataset(dataset_name, print_sample_number):
     X_train, X_test = flatten_image(X_train, X_test)
 
     return X_train, X_test, y_train, y_test
-   
+
+def get_dataset_for_ae(dataset_name, with_val):
+    fetch_fun = select_fetch_fucntion(dataset_name)
+
+    X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
+
+    X_train, X_test = flatten_image(X_train, X_test)
+
+    if with_val:
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=1/(1+6), random_state=seed)
+        return X_train, X_val, X_test, y_train, y_val, y_test
+    else:
+        return X_train, X_test, y_train, y_test
+
+def get_dataset_for_ae2(dataset_name, with_val):
+    fetch_fun = select_fetch_fucntion(dataset_name)
+
+    X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
+
+    X_train, X_test = extend_images_to_4d(X_train, X_test)
+
+    if with_val:
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=1/(1+6), random_state=seed)
+        return X_train, X_val, X_test, y_train, y_val, y_test
+    else:
+        return X_train, X_test, y_train, y_test
