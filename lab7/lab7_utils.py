@@ -134,15 +134,3 @@ def get_dataset_for_ae(dataset_name, with_val):
     else:
         return X_train, X_test, y_train, y_test
 
-def get_dataset_for_ae2(dataset_name, with_val):
-    fetch_fun = select_fetch_fucntion(dataset_name)
-
-    X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
-
-    X_train, X_test = extend_images_to_4d(X_train, X_test)
-
-    if with_val:
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=1/(1+6), random_state=seed)
-        return X_train, X_val, X_test, y_train, y_val, y_test
-    else:
-        return X_train, X_test, y_train, y_test
