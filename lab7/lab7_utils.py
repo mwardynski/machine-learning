@@ -55,7 +55,7 @@ def fetch_from_openml(dataset_name):
 
     return train_test_split(X, y, test_size=1/(1+6), random_state=seed)
 
-def select_fetch_fucntion(dataset_name):
+def select_fetch_function(dataset_name):
     if dataset_name == Dataset_Select.KUZ_49.value:
         fetch_fun = fetch_from_openml
     elif dataset_name == Dataset_Select.K_MNIST.value:
@@ -95,7 +95,7 @@ def flatten_image(X_train, X_test):
 def flatten_and_normalize_image(X_train, X_test):
     X_train , X_test = flatten_image(X_train, X_test)
 
-    return X_train / 255, X_test / 255
+    return (X_train / 255).astype(np.float32), (X_test / 255).astype(np.float32)
 
 def extend_images_to_4d(X_train, X_test):
   X_train = X_train.reshape((X_train.shape[0], 28, 28, 1)) / 255.
@@ -108,7 +108,7 @@ def extend_images_to_4d(X_train, X_test):
 
 
 def get_dataset(dataset_name, print_sample_number):
-    fetch_fun = select_fetch_fucntion(dataset_name)
+    fetch_fun = select_fetch_function(dataset_name)
 
     X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
 
@@ -122,7 +122,7 @@ def get_dataset(dataset_name, print_sample_number):
     return X_train, X_test, y_train, y_test
 
 def get_dataset_for_ae(dataset_name, with_val):
-    fetch_fun = select_fetch_fucntion(dataset_name)
+    fetch_fun = select_fetch_function(dataset_name)
 
     X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
 
