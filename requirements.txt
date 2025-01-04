@@ -4,6 +4,7 @@ lime
 notebook
 numpy
 opencv-python
+optuna
 pandas
 scikeras
 scikit-learn==1.5.2

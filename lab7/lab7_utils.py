@@ -107,7 +107,7 @@ def extend_images_to_4d(X_train, X_test):
   return X_train, X_test
 
 
-def get_dataset(dataset_name, print_sample_number):
+def get_dataset(dataset_name, print_sample_number=0):
     fetch_fun = select_fetch_function(dataset_name)
 
     X_train, X_test, y_train, y_test = fetch_fun(dataset_name)
