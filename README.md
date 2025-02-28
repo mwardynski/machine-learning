@@ -2,6 +2,8 @@
 
 This repository contains solved labs covering various ML techniques.
 
+All the labs were highly informative, and from Lab 3 onward, they became increasingly challenging and time-intensive. However, the depth of knowledge gained through solving the exercises perfectly justified the effort invested.
+
 ### Tabular content description
 
 |   | Topic                                        | Lang | Type          | Instruction                      | Solution                              | Libs*/Tools                                 | Points |
